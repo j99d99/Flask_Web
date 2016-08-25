@@ -1,1 +1,1 @@
-app_models是Flask框架的简单架构模板，一个新项目开始时的初始配置文件等
+app_models鏄疐lask妗嗘灦鐨勭畝鍗曟灦鏋勬ā鏉匡紝涓�涓柊椤圭洰寮�濮嬫椂鐨勫垵濮嬮厤缃枃浠剁瓑
