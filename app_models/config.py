@@ -1,13 +1,22 @@
-CSRF_ENABLED = True
-SECRET_KEY = 'ssssssxx'
+import os
+
+class Config:
+    CSRF_ENABLED = True
+    SECRET_KEY = 'sssxxssxx'
+
+    #UPLOAD_FOLDER = 'server_key'
+    #ALLOWED_EXTENSIONS = set(['txt','pdf','jpg'])
+
+    @staticmethod
+    def init_app(app):
+        pass
 
 
-#OPENID_PROVIDERS = [
-#    { 'name': 'Google', 'url': 'https://www.google.com/accounts/o8/id' },
-#    { 'name': 'Yahoo', 'url': 'https://me.yahoo.com' },
-#    { 'name': 'AOL', 'url': 'http://openid.aol.com/<username>' },
-#    { 'name': 'Flickr', 'url': 'http://www.flickr.com/<username>' },
-#    { 'name': 'MyOpenID', 'url': 'https://www.myopenid.com' }]
+class Developmentconfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'mysql://mysqlTest:mysqlTest@127.0.0.1/selectdb'
 
-
-SQLALCHEMY_DATABASE_URI = 'mysql://mysqlTest:mysqlTest@192.168.9.5/mysqlTest'
+config = {
+    'deveopconfig': Developmentconfig,
+    'default': Developmentconfig
+}
