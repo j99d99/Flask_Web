@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="table-responsive">
+<form action="/display" method="post">
+<div>
+当前查询的数据库{{ hostname }}-->{{ dbname }}<br>
+<input type="hidden" name="dbid" value="{{ dbid }}">
+请输入查询语句:<input type="text" name="command"></input>
+<input type="submit" name="go"></input>
+</div>
+<div>
+	<ul>
+		<li>1.请输入select或show相关的查询语句,不支持其他操作</li>
+		<li>2.考虑返回结果的大小，显示结果时间长短不一,尽量不要执行数据量过大的查询</li>
+	</ul>
+</div>
+</form>
+
+	<table class="table table-striped table-bordered table-condensed table-hover">
+			{% for list in data %}
+			<tr>
+				{% for i in range(0,list|length) %}
+
+					<td>{{ list[i|int] }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+	</table>
+</div>
+{% endblock %}

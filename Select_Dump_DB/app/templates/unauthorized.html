@@ -1,0 +1,56 @@
+{% extends "base.html"%}
+{% block content %}
+<div class="table-responsive">
+			<div>
+				{{ username }},未授权项目如下:
+			</div>
+			<table class="table table-striped table-bordered table-condensed table-hover">
+					<tr>
+						<td>id</td>
+						<td>项目</td>
+						<td>操作</td>
+					</tr>
+					{% for list in data %}
+					<tr>
+						<td>{{ list.id}}</td>
+						<td>{{ list.hostname }}</td>
+
+						<td>
+							{#% if current_user.role == '0' %#}
+							<button type="button" class="btn btn-xs btn-primary btn-save" list-id='{{list.id}}' user-id='{{userid}}'>添加
+						</button>
+							{#% endif %#}
+						</td>
+					</tr>
+					{% endfor %}
+			</table>
+</div>
+
+<script>
+	// $("button[list-id]").click(function(){
+	// 	var currentId = $(this).attr('list-id');
+	// 	$.post("mysqldump/"+currentId,
+	// });
+    $(document).ready(function () {
+		$('button[list-id]').on('click',function(){			
+			// $('.btn-save').on('click', function () {
+			var currentId = $(this).attr('list-id');
+			var currentUserId = $(this).attr('user-id');
+		    $.ajax({
+		                type : 'POST',
+		                url : '/squser/'+currentUserId,   //发送请求的url地址
+		                // url : 'http://127.0.0.1:5000/mysqldump/'+currentId,   //发送请求的url地址
+		                data: {dbid:currentId}, //请求带的参数
+		                dataType : 'json' , //返回数据类型，一般为json
+		                success: function (res) {  //返回成功时的回调函数
+		                    console.log(res);
+		                },
+		                error: function (res) { //返回出错时的回调函数，一般为系统级别的异常
+		                    console.log(res);
+		                }
+		        });
+		    });
+		});
+</script>
+
+{% endblock%}
