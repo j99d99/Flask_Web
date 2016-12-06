@@ -57,7 +57,13 @@ class DBInfo(db.Model):
     dbuser = db.Column(db.String(64))
     dbpass = db.Column(db.String(64))
 
-
+class LogInfo(db.Model):
+    __tablename__ = 'logs'
+    id = db.Column(db.Integer,primary_key=True)
+    user = db.Column(db.String(64), index = True)
+    hostname = db.Column(db.String(32),index = True)
+    command = db.Column(db.String(128))
+    datetime = db.Column(db.DateTime,default=datetime.datetime.now)
 
 
 #python manager.py db init

@@ -2,7 +2,7 @@
 from flask import render_template, flash, redirect,url_for,request,send_from_directory,abort
 from . import main
 from forms import UserForm,DBForm,CommandForm
-from ..models import User,DBInfo,user_role
+from ..models import User,DBInfo,user_role,LogInfo
 from flask.ext.login import login_required,logout_user,login_user,current_user
 from ssh_pass import ssh_connection,ssh_key_connection,ssh_key_downfile
 from .. import db
@@ -46,7 +46,7 @@ def unauthorized(id):
 		db.session.commit()
 		flash(u'添加成功')
 		return redirect(url_for('main.listuser'))
-	return render_template('unauthorized.html',data=datainfos,username=user.username)
+	return render_template('unauthorized.html',data=datainfos,username=user.username,userid=user.id)
 
 #查看用户已授权的项目,管理员拥有权限
 @main.route('/authorized/<id>',methods=['GET','POST'])
@@ -56,7 +56,7 @@ def authorized(id):
 		return abort(403)
 	user = User.query.filter_by(id=id).first()
 	datainfo = user.roles
-	return render_template('authorized.html',data=datainfo,username=user.username)
+	return render_template('authorized.html',data=datainfo,username=user.username,userid=user.id)
 
 #添加用户,管理员拥有权限
 @main.route('/adduser',methods=['GET','POST'])
@@ -192,6 +192,9 @@ def display():
 
 			print list
 			ssh.close()
+			log = LogInfo(user=current_user.username,hostname=datainfo.hostname,command=commands)
+			db.session.add(log)
+			db.session.commit()
 			return render_template('select.html',dbid=id,data=list,hostname=datainfo.hostname,dbname=datainfo.dbname)
 			# return redirect(url_for('main.select',dbid=id,data=list,hostname=datainfo.hostname,dbname=datainfo.dbname))
 		if command.startswith('show'):
@@ -212,8 +215,14 @@ def display():
 
 			print list
 			ssh.close()
+			log = LogInfo(user=current_user.username,hostname=datainfo.hostname,command=commands)
+			db.session.add(log)
+			db.session.commit()
 			return render_template('select.html',dbid=id,data=list,hostname=datainfo.hostname,dbname=datainfo.dbname)
 		else:
+			log = LogInfo(user=current_user.username,hostname=datainfo.hostname,command=comm)
+			db.session.add(log)
+			db.session.commit()
 			return render_template('selecterror.html')
 	return redirect(url_for('main.index'))
 
@@ -257,6 +266,9 @@ def mysqldump():
 		#下载刚刚备份的文件
 		sftpssh.get(backfilename, os.path.abspath('.')+os.sep+'back'+os.sep+backfilename)
 		sftpssh.close()
+		log = LogInfo(user=current_user.username,hostname=datainfo.hostname,command=command1)
+		db.session.add(log)
+		db.session.commit()
 		#在本地压缩
 		command = 'cd '+ os.path.abspath('.')+os.sep+'back && '+command2
 		print command
