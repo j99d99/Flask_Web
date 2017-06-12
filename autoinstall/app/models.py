@@ -43,6 +43,7 @@ class Hosts(db.Model):
     projectname = db.Column(db.String(64),index=True,unique=True,)
     ipaddress = db.Column(db.String(64),index=True,unique=True,nullable=False)
     ssh_user = db.Column(db.String(32),default = 'root')
+    general_user = db.Column(db.String(32),default = 'www')
     ssh_port = db.Column(db.SmallInteger,default = '22')
     # type_value = db.Column(db.SmallInteger,default = '0')
     ssh_passwd = db.Column(db.String(128))

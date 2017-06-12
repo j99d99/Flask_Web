@@ -12,12 +12,21 @@ from saltclass import salt_ssh,salt_command
 @main.route('/host-info')
 def hostinfo():
 	return render_template('host-info.html')
-
+@main.route('/')
 @main.route('/host-list')
 def hostlist():
 	hosts = Hosts.query.all()
 	return render_template('host-list.html',hosts=hosts)
 
+@main.route('/host-del',methods=['POST'])
+def delHost():
+	id = request.form['delid']
+	print id
+	delhost = Hosts.query.get(id)
+	db.session.delete(delhost)
+	db.session.commit()
+	return redirect(url_for('main.hostlist'))
+	
 
 @main.route('/host-add',methods=['POST','GET'])
 def addHost():
@@ -25,14 +34,16 @@ def addHost():
 		projectname = request.form['projectname']
 		ipaddress = request.form['ipaddress']
 		username = request.form['sshuser']
+		general_user = request.form.get('general_user','None')
 		#port = request.form['ssh_port']
 		passwd = request.form['password']
+		projecttype = request.form.get('projecttype','None')
+		comment = request.form.get('comment','None')
 		#manageruser = request.form['manageuser']
 		#managerpasswd = request.form['managepasswd']
 		#domaininfo = request.form['domaininfo']
 		print ipaddress
-		#hostinfo = Hosts(projectname=projectname,ipaddress=ipaddress,ssh_user=username,ssh_passwd=passwd,manageruser=manageruser,managerpasswd=managerpasswd,domaininfo=domaininfo)
-		hostinfo = Hosts(projectname=projectname,ipaddress=ipaddress,ssh_user=username,ssh_passwd=passwd)
+		hostinfo = Hosts(projectname=projectname,ipaddress=ipaddress,ssh_user=username,ssh_passwd=passwd,projecttype=projecttype,comment=comment,general_user=general_user)
 		db.session.add(hostinfo)
 		db.session.commit()
 		return 'OK'
@@ -53,6 +64,22 @@ def xdinstall(id):
 	client = salt_command(hostinfo.ipaddress)
 	client.cpfile('xiaodai')
 	#ret = s.cmd(ip,'cmd.script',['salt://xiaodai/xd.sh','testxd'])
-	ret = client.script('install_xd.sh')
+	client.script('install_xd.sh')
+	ret = client.script('create_rsakey.sh',hostinfo.general_user)
 	print jsonify({'message':ret})
 	return jsonify({'message':ret})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

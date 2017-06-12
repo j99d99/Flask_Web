@@ -21,18 +21,24 @@
             </div>
         </div>
         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>普通用户：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" autocomplete="off" value="" placeholder="普通用户" id="general_user" name="general_user">
+            </div>
+        </div>
+        <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录密码：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="password" class="input-text" autocomplete="off"  placeholder="登录密码" id="password" name="password">
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-3">角色：</label>
+            <label class="form-label col-xs-4 col-sm-3">系统类型：</label>
             <div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
-				<select class="select" name="adminRole" size="1">
-					<option value="0">超级管理员</option>
-					<option value="1">总编</option>
-					<option value="2">栏目主辑</option>
+				<select class="select" name="projecttype" size="1">
+					<option value="0">现金贷</option>
+					<option value="1">融云系统</option>
+					<option value="2">P2PV2</option>
 					<option value="3">栏目编辑</option>
 				</select>
 				</span> </div>
@@ -40,7 +46,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3">备注：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="textarealength(this,100)"></textarea>
+                <textarea name="comment" cols="" rows="" class="textarea"  placeholder="说点什么...100个字符以内" dragonfly="true" onKeyUp="textarealength(this,100)"></textarea>
                 <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
             </div>
         </div>
@@ -78,7 +84,7 @@
                     required:true,
 //                    equalTo: "#password"
                 },
-                adminRole:{
+                projecttype:{
                     required:true,
                 },
             },

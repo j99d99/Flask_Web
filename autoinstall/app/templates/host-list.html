@@ -10,7 +10,7 @@
                 <button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
             </div>
             <div class="cl pd-5 bg-1 bk-gray mt-20">
-                <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="admin_add('添加管理员','admin-add.html','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a> </span>
+                <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="admin_add('添加主机','host-add','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加主机</a> </span>
                 <span class="r">共有数据：<strong>{{hosts|length}}</strong> 条</span>
             </div>
             <table class="table table-border table-bordered table-bg">
@@ -37,7 +37,7 @@
                     <td>{{ host.ipaddress }}</td>
                     <td>{{ host.ssh_user }}</td>
                     <td>{{ host.ssh_passwd}}</td>
-                    <td class="td-manage"><a style="text-decoration:none" onClick="salt_minion_install(this,{{ host.id }})" href="javascript:;" title="安装salt-minion"><i class="Hui-iconfont">&#xe6f1;</i></a>  <a style="text-decoration:none" onClick="admin_stop(this,{{ host.id }})" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe6e1;</i></a>   <a title="详情" href="javascript:;" onclick="admin_edit('详情信息','host-info','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe64f;</i></a>   <a title="删除" href="javascript:;" onclick="admin_del(this,'1')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                    <td class="td-manage"><a style="text-decoration:none" onClick="salt_minion_install(this,{{ host.id }})" href="javascript:;" title="安装salt-minion"><i class="Hui-iconfont">&#xe6f1;</i></a>  <a style="text-decoration:none" onClick="admin_stop(this,{{ host.id }})" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe6e1;</i></a>   <a title="详情" href="javascript:;" onclick="admin_edit('详情信息','host-info','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe64f;</i></a>   <a title="删除" href="javascript:;" onClick="admin_del(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
 		{% endfor %}
                 </tbody>
             </table>
@@ -60,9 +60,12 @@ function admin_add(title,url,w,h){
 function admin_del(obj,id){
 	layer.confirm('确认要删除吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
-		
+		$.post("/host-del",{delid:id},function (data,index) {
+			layer.msg('删除成功',{icon: 5,time:1000});
+		});
 		$(obj).parents("tr").remove();
-		layer.msg('已删除!',{icon:1,time:1000});
+		// layer.msg('已删除!',{icon:1,time:1000});
+		layer.close(index);
 	});
 }
 /*管理员-编辑*/
@@ -71,16 +74,18 @@ function admin_edit(title,url,id,w,h){
 }
 /*安装salt-minion*/
 function salt_minion_install(obj,id){
-	layer.confirm('确认要停用吗？',function(index){
+	layer.confirm('确认要安装salt-minion吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
 		$.post("/salt_minioninstall/"+id,function (data,index) {
-                            layer.alert(data)
-                        });
+			// layer.msg(data);
+			layer.msg('已安装成功!',{icon: 5,time:1000});
+		});
 		
 		// $(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_start(this,id)" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe6dd;</i></a>');
 		// $(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已禁用</span>');
 		$(obj).remove();
-		layer.msg('已安装!',{icon: 5,time:1000});
+		// layer.msg('已安装!',{icon: 5,time:1000});
+		layer.close(index);
 	});
 }
 
@@ -89,13 +94,14 @@ function admin_stop(obj,id){
 	layer.confirm('确认要停用吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
 		$.post("/test/"+id,function (data,index) {
-                            layer.alert(data)
+			layer.msg('已安装完成!',{icon: 5,time:1000});
                         });
 		
-		$(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_start(this,id)" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe6dd;</i></a>');
-		$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已禁用</span>');
+		// $(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_start(this,id)" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe6dd;</i></a>');
+		//$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已禁用</span>');
 		$(obj).remove();
-		layer.msg('已停用!',{icon: 5,time:1000});
+		// layer.msg('已停用!',{icon: 5,time:1000});
+		layer.close(index);
 	});
 }
 

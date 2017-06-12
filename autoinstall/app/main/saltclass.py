@@ -48,13 +48,21 @@ class salt_command(salt_api):
 			return ret
 	
 
-	def script(self,scriptname):
+	def script(self,scriptname,*args):
 		self.scriptname = scriptname
+		print len(args)
+		if len(args) != 0:
+			self.arg1 = args[0]
+			print self.arg1
+			ret = client.cmd(self.ipaddress,'cmd.script',['salt://%s' % self.scriptname,self.arg1])
 		print self.scriptname
-		ret = client.cmd(self.ipaddress,'cmd.script',['salt://%s' % self.scriptname])
+		if len(args) == 0:
+			ret = client.cmd(self.ipaddress,'cmd.script',['salt://%s' % self.scriptname])
+		print ret
 		return ret
 		
 
+		
 
 	def archivefile(self):
 		pass
