@@ -3,6 +3,7 @@ from werkzeug.security import  generate_password_hash,check_password_hash
 from . import login_manager
 import datetime
 
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer,primary_key = True)
@@ -63,9 +64,6 @@ class  ConfigInfo(db.Model):
     modelcodepath = db.Column(db.String(64))
     modellogpath = db.Column(db.String(64))
         
-        
-
-
 
 #python manager.py db init
 #python manager.py db migrate -m 'mesages'

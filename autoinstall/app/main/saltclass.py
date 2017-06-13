@@ -4,6 +4,7 @@ import os
 
 s = sshclient(c_path='/etc/salt/master')
 file_roots = s.opts.get('file_roots')['base'][0]
+getfile_destdir = s.opts.get('cachedir')
 client = salt.client.LocalClient()
 
 class salt_api:
@@ -50,15 +51,12 @@ class salt_command(salt_api):
 
 	def script(self,scriptname,*args):
 		self.scriptname = scriptname
-		print len(args)
 		if len(args) != 0:
 			self.arg1 = args[0]
 			print self.arg1
 			ret = client.cmd(self.ipaddress,'cmd.script',['salt://%s' % self.scriptname,self.arg1])
-		print self.scriptname
 		if len(args) == 0:
 			ret = client.cmd(self.ipaddress,'cmd.script',['salt://%s' % self.scriptname])
-		print ret
 		return ret
 		
 
@@ -71,8 +69,22 @@ class salt_command(salt_api):
 		self.service = servicename
 		client.cmd(self.ipaddress,'pkg.install',[self.service])
 
-	def editfile(self):
-		pass
+	def getfile_from_minion(self,file_path):
+		self.file_path = file_path
+		client.cmd(self.ipaddress,'cp.push',[self.file_path])
+		abs_file_path = getfile_destdir + '/minions/' +self.ipaddress+'/files/'+file_path
+		cpcommand = "mv %s %s" % (abs_file_path,file_roots)
+		print abs_file_path
+		os.system(cpcommand)
+
+	def editfile(self,*args):
+		if len(args) != 3:
+			return 'you should input 3 args'
+		if len(args) == 3:
+			self.arg1 =  args[0]
+			self.arg2 =  args[1]
+			self.arg3 =  args[2]
+			client.cmd(self.ipaddress,'file.sed',[self.arg1,self.arg2,self.arg3])
 
 	def servicemanage(self):
 		pass

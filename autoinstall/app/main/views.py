@@ -8,6 +8,7 @@ from flask.ext.login import login_required,logout_user,login_user,current_user
 # from ssh_upmanage import ops_manage
 import os,time
 from saltclass import salt_ssh,salt_command
+import random
 
 @main.route('/host-info')
 def hostinfo():
@@ -64,8 +65,23 @@ def xdinstall(id):
 	client = salt_command(hostinfo.ipaddress)
 	client.cpfile('xiaodai')
 	#ret = s.cmd(ip,'cmd.script',['salt://xiaodai/xd.sh','testxd'])
-	client.script('install_xd.sh')
+	if int(hostinfo.projecttype) == 0: 
+		client.script('install_xd.sh')
+	if int(hostinfo.projecttype) == 1: 
+		client.script('install_rongyun.sh')
+	if int(hostinfo.projecttype) == 2: 
+		client.script('install_p2p.sh')
 	ret = client.script('create_rsakey.sh',hostinfo.general_user)
+	#change ssh port
+	sshport =  random.randint(40000,65536)
+	print sshport
+	client.editfile('/etc/ssh/sshd_config','#Port 22','Port %s' % sshport)
+	client.editfile('/etc/ssh/sshd_config','#PermitRootLogin yes','PermitRootLogin no')
+	client.editfile('/etc/ssh/sshd_config','PermitRootLogin yes','PermitRootLogin no')
+	client.getfile_from_minion('/home/%s/.ssh/%s.tar.gz' % (hostinfo.general_user,hostinfo.general_user))
+	hostinfo.ssh_port = sshport
+	db.session.add(hostinfo)
+	db.session.commit()
 	print jsonify({'message':ret})
 	return jsonify({'message':ret})
 
