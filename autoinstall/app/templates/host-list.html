@@ -37,7 +37,7 @@
                     <td>{{ host.ipaddress }}</td>
                     <td>{{ host.ssh_user }}</td>
                     <td>{{ host.ssh_passwd}}</td>
-                    <td class="td-manage"><a style="text-decoration:none" onClick="salt_minion_install(this,{{ host.id }})" href="javascript:;" title="安装salt-minion"><i class="Hui-iconfont">&#xe6f1;</i></a>  <a style="text-decoration:none" onClick="admin_stop(this,{{ host.id }})" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe6e1;</i></a>   <a title="详情" href="javascript:;" onclick="admin_edit('详情信息','host-info','1','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe64f;</i></a>   <a title="删除" href="javascript:;" onClick="admin_del(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                    <td class="td-manage"><a style="text-decoration:none" onClick="salt_minion_install(this,{{ host.id }})" href="javascript:;" title="安装salt-minion"><i class="Hui-iconfont">&#xe6f1;</i></a>  <a style="text-decoration:none" onClick="admin_stop(this,{{ host.id }})" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe6e1;</i></a>   <a title="详情" href="javascript:;" onclick="admin_edit(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe64f;</i></a>   <a title="删除" href="javascript:;" onClick="admin_del(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
 		{% endfor %}
                 </tbody>
             </table>
@@ -69,8 +69,11 @@ function admin_del(obj,id){
 	});
 }
 /*管理员-编辑*/
-function admin_edit(title,url,id,w,h){
-	layer_show(title,url,w,h);
+function admin_edit(obj,id){
+	$.get("/host-info/"+id,function(){
+		window.location.href = '/host-info/'+id
+	})
+	// layer_show(title,url,w,h);
 }
 /*安装salt-minion*/
 function salt_minion_install(obj,id){

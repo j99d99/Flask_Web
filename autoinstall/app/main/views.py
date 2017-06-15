@@ -10,9 +10,10 @@ import os,time
 from saltclass import salt_ssh,salt_command
 import random
 
-@main.route('/host-info')
-def hostinfo():
-	return render_template('host-info.html')
+@main.route('/host-info/<id>')
+def hostinfo(id):
+	hostinfo = Hosts.query.get(id)
+	return render_template('host-info.html',hostinfo=hostinfo)
 @main.route('/')
 @main.route('/host-list')
 def hostlist():
@@ -54,6 +55,8 @@ def addHost():
 def saltminion(id):
 	hostinfo = Hosts.query.get(id)
 	saltssh = salt_ssh(hostinfo.ipaddress,hostinfo.ssh_user,hostinfo.ssh_passwd)
+	print hostinfo.ipaddress
+	print hostinfo.ssh_user
 	result = saltssh.ssh()
 	print result
 	return jsonify({'message':result})
@@ -63,13 +66,16 @@ def saltminion(id):
 def xdinstall(id):
 	hostinfo = Hosts.query.get(id)
 	client = salt_command(hostinfo.ipaddress)
-	client.cpfile('xiaodai')
+	client.script('auto_parted.sh')
 	#ret = s.cmd(ip,'cmd.script',['salt://xiaodai/xd.sh','testxd'])
 	if int(hostinfo.projecttype) == 0: 
+		client.cpfile('xiaodai')
 		client.script('install_xd.sh')
 	if int(hostinfo.projecttype) == 1: 
+		client.cpfile('rongyun')
 		client.script('install_rongyun.sh')
 	if int(hostinfo.projecttype) == 2: 
+		client.cpfile('p2pv2')
 		client.script('install_p2p.sh')
 	ret = client.script('create_rsakey.sh',hostinfo.general_user)
 	#change ssh port
@@ -82,20 +88,6 @@ def xdinstall(id):
 	hostinfo.ssh_port = sshport
 	db.session.add(hostinfo)
 	db.session.commit()
+	client.servicemanage('sshd')
 	print jsonify({'message':ret})
 	return jsonify({'message':ret})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

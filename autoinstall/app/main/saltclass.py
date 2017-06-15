@@ -6,6 +6,8 @@ s = sshclient(c_path='/etc/salt/master')
 file_roots = s.opts.get('file_roots')['base'][0]
 getfile_destdir = s.opts.get('cachedir')
 client = salt.client.LocalClient()
+epel6 = "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
+epel7 = "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
 
 class salt_api:
 	def __init__(self,ipaddress):
@@ -18,9 +20,10 @@ class salt_ssh(salt_api):
 		self.passwd = passwd
 
 	def ssh(self):
-		ret = s.cmd(tgt=self.ipaddress,fun='test.ping',ignore_host_keys=True,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
-		s.cmd(tgt=self.ipaddress, fun='pkg.install',arg=['salt-minion'], ignore_host_keys=False,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
-		s.cmd(tgt=self.ipaddress,fun='file.sed',arg=['/etc/salt/minion','#master: salt','master: 192.168.1.134'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
+		s.cmd(tgt=self.ipaddress,fun='test.ping',ignore_host_keys=True,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
+		ret = s.cmd(tgt=self.ipaddress, fun='pkg.install',arg=['salt-minion'],ignore_host_keys=True,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
+		print ret
+		s.cmd(tgt=self.ipaddress,fun='file.sed',arg=['/etc/salt/minion','#master: salt','master: 172.16.88.182'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		s.cmd(tgt=self.ipaddress,fun='file.sed',arg=['/etc/salt/minion','#id:','id: %s' % self.ipaddress],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		s.cmd(tgt=self.ipaddress,fun='service.start',arg=['salt-minion'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		ret = client.cmd(self.ipaddress,'test.ping')
@@ -86,8 +89,10 @@ class salt_command(salt_api):
 			self.arg3 =  args[2]
 			client.cmd(self.ipaddress,'file.sed',[self.arg1,self.arg2,self.arg3])
 
-	def servicemanage(self):
-		pass
+	def servicemanage(self,servicename):
+		self.service = servicename
+		client.cmd(self.ipaddress,'service.restart',[self.service])
+		
 
 #a = salt_ssh('192.168.1.128','root','RDkj2016')
 #a = salt_command('192.168.1.128')
