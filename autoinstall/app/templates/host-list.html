@@ -31,7 +31,7 @@
                 <tbody>
 		{% for host in hosts %}
                 <tr class="text-c">
-                    <td><input type="checkbox" value="1" name=""></td>
+                    <td><input type="checkbox" value={{ host.id }} name=""></td>
                     <td>{{ host.id }}</td>
                     <td>{{ host.projectname }}</td>
                     <td>{{ host.ipaddress }}</td>

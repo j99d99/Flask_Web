@@ -1,98 +1,66 @@
 {% extends 'base.html' %}
 {% block content %}
-<article class="cl pd-20">
-	<form action="" method="post" class="form form-horizontal" id="form-admin-add">
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>项目名称：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<span>{{ hostinfo.projectname }}</span>
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录IP：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<span>{{ hostinfo.ipaddress }}</span>
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>root密码：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<span>{{ hostinfo.ssh_passwd }}</span>
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录用户：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<span>{{ hostinfo.general_user }}</span>
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录端口：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<span>{{ hostinfo.ssh_port }}</span>
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3">备注：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<span>{{ hostinfo.comment }}</span>
-			</div>
-		</div>
-		<div class="row cl">
-			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
-			</div>
-		</div>
-	</form>
-</article>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <table class="table table-border table-bordered table-bg" id="export_info">
+                <thead>
+                <tr>
+                    <th scope="col" colspan="9">主机列表</th>
+                </tr>
+                <tr class="text-c">
+                    <th width="150">标题</th>
+                    <th width="150">项目信息</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-c">
+                    <td>项目名称</td>
+                    <td>{{ hostinfo.projectname }}</td>
+		</tr>
+                <tr class="text-c">
+                    <td>服务器IP</td>
+                    <td>{{ hostinfo.ipaddress }}</td>
+		</tr>
+                <tr class="text-c">
+                    <td>root密码</td>
+                    <td>{{ hostinfo.ssh_passwd }}</td>
+		</tr>
+                <tr class="text-c">
+                    <td>登录端口</td>
+                    <td>{{ hostinfo.ssh_port }}</td>
+		</tr>
+                <tr class="text-c">
+                    <td>登录用户</td>
+                    <td>{{ hostinfo.general_user }}</td>
+		</tr>
+                <tr class="text-c">
+                    <td>项目名称</td>
+                    <td>{{ hostinfo.projectname }}</td>
+		</tr>
+                <tr class="text-c">
+                    <td>项目名称</td>
+                    <td>{{ hostinfo.projectname }}</td>
+		</tr>
+                </tbody>
+            </table>
+            <div class="cl pd-5 bg-1 bk-gray mt-20">
+                <span class="l"><a href="javascript:;" onclick="datadel('#export_info')" class="btn btn-danger radius"> <i class="Hui-iconfont">&#xe6e2;</i> 导出信息</a></span>
+            </div>
+        </article>
 {% endblock %}
-{% block jscript %}
-$(function(){
-	$('.skin-minimal input').iCheck({
-		checkboxClass: 'icheckbox-blue',
-		radioClass: 'iradio-blue',
-		increaseArea: '20%'
-	});
-	
-	$("#form-admin-add").validate({
-		rules:{
-			adminName:{
-				required:true,
-				minlength:4,
-				maxlength:16
-			},
-			password:{
-				required:true,
-			},
-			password2:{
-				required:true,
-				equalTo: "#password"
-			},
-			sex:{
-				required:true,
-			},
-			phone:{
-				required:true,
-				isPhone:true,
-			},
-			email:{
-				required:true,
-				email:true,
-			},
-			adminRole:{
-				required:true,
-			},
-		},
-		onkeyup:false,
-		focusCleanup:true,
-		success:"valid",
-		submitHandler:function(form){
-			$(form).ajaxSubmit();
-			var index = parent.layer.getFrameIndex(window.name);
-			parent.$('.btn-refresh').click();
-			parent.layer.close(index);
-		}
-	});
-});
-<!--/请在上方写此页面业务相关的脚本-->
-{% endblock%}
+{% block jsscript %}
+function datadel(obj){
+	// $("#btnExport").click(function(){
+        $("table").tableExport({
+		headings: true, 
+    		footers: true, 
+    		formats: ["xls", "csv", "txt"],
+    		fileName: "{{ hostinfo.projectname }}",
+    		bootstrap: true,
+    		position: "bottom",
+    		ignoreRows: null,
+    		ignoreCols: null
+        });
+//    });
+}
+{% endblock %}

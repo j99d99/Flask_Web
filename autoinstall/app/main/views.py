@@ -91,3 +91,7 @@ def xdinstall(id):
 	client.servicemanage('sshd')
 	print jsonify({'message':ret})
 	return jsonify({'message':ret})
+
+#@main.route('/download/hostinfo/<id>',methods=['GET','POST'])
+#def download(id):
+#	hostinfo = Hosts.query.get(id)
