@@ -21,6 +21,8 @@ class salt_ssh(salt_api):
 
 	def ssh(self):
 		s.cmd(tgt=self.ipaddress,fun='test.ping',ignore_host_keys=True,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
+		s.cmd(tgt=self.ipaddress,fun='cp.get_file',arg=['salt://epel-release-latest-6.noarch.rpm','/tmp/epel-release-latest-6.noarch.rpm'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
+		s.cmd(tgt=self.ipaddress,fun='cmd.shell',arg=['rpm -vih /tmp/epel-release-latest-6.noarch.rpm'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		ret = s.cmd(tgt=self.ipaddress, fun='pkg.install',arg=['salt-minion'],ignore_host_keys=True,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		print ret
 		s.cmd(tgt=self.ipaddress,fun='file.sed',arg=['/etc/salt/minion','#master: salt','master: 172.16.88.182'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')

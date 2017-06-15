@@ -10,7 +10,7 @@
                 <button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
             </div>
             <div class="cl pd-5 bg-1 bk-gray mt-20">
-                <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="admin_add('添加主机','host-add','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加主机</a> </span>
+                <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="admin_add('添加主机','host_add','800','500')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加主机</a> </span>
                 <span class="r">共有数据：<strong>{{hosts|length}}</strong> 条</span>
             </div>
             <table class="table table-border table-bordered table-bg">
@@ -37,7 +37,7 @@
                     <td>{{ host.ipaddress }}</td>
                     <td>{{ host.ssh_user }}</td>
                     <td>{{ host.ssh_passwd}}</td>
-                    <td class="td-manage"><a style="text-decoration:none" onClick="salt_minion_install(this,{{ host.id }})" href="javascript:;" title="安装salt-minion"><i class="Hui-iconfont">&#xe6f1;</i></a>  <a style="text-decoration:none" onClick="admin_stop(this,{{ host.id }})" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe6e1;</i></a>   <a title="详情" href="javascript:;" onclick="admin_edit(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe64f;</i></a>   <a title="删除" href="javascript:;" onClick="admin_del(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                    <td class="td-manage"><a style="text-decoration:none" onClick="salt_minion_install(this,{{ host.id }})" href="javascript:;" title="安装salt-minion"><i class="Hui-iconfont">&#xe6f1;</i></a>  <a style="text-decoration:none" onClick="admin_stop(this,{{ host.id }})" href="javascript:;" title="初始化安装系统"><i class="Hui-iconfont">&#xe6e1;</i></a>   <a title="详情" href="javascript:;" onclick="admin_edit(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe64f;</i></a>   <a title="删除" href="javascript:;" onClick="admin_del(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
 		{% endfor %}
                 </tbody>
             </table>

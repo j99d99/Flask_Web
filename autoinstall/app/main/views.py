@@ -11,16 +11,19 @@ from saltclass import salt_ssh,salt_command
 import random
 
 @main.route('/host-info/<id>')
+@login_required
 def hostinfo(id):
 	hostinfo = Hosts.query.get(id)
 	return render_template('host-info.html',hostinfo=hostinfo)
 @main.route('/')
 @main.route('/host-list')
+@login_required
 def hostlist():
 	hosts = Hosts.query.all()
 	return render_template('host-list.html',hosts=hosts)
 
 @main.route('/host-del',methods=['POST'])
+@login_required
 def delHost():
 	id = request.form['delid']
 	print id
@@ -29,8 +32,29 @@ def delHost():
 	db.session.commit()
 	return redirect(url_for('main.hostlist'))
 	
-
+@main.route('/host_add',methods=['GET','POST'])
+@login_required
+def addHostiframe():
+	if request.method == 'POST':
+		projectname = request.form['projectname']
+		ipaddress = request.form['ipaddress']
+		username = request.form['sshuser']
+		general_user = request.form.get('general_user','None')
+		#port = request.form['ssh_port']
+		passwd = request.form['password']
+		projecttype = request.form.get('projecttype','None')
+		comment = request.form.get('comment','None')
+		#manageruser = request.form['manageuser']
+		#managerpasswd = request.form['managepasswd']
+		#domaininfo = request.form['domaininfo']
+		print ipaddress
+		hostinfo = Hosts(projectname=projectname,ipaddress=ipaddress,ssh_user=username,ssh_passwd=passwd,projecttype=projecttype,comment=comment,general_user=general_user)
+		db.session.add(hostinfo)
+		db.session.commit()
+		return 'OK'
+	return render_template('_add.html')
 @main.route('/host-add',methods=['POST','GET'])
+@login_required
 def addHost():
 	if request.method == 'POST':
 		projectname = request.form['projectname']
@@ -52,6 +76,7 @@ def addHost():
 	return render_template('host-add.html')
 
 @main.route('/salt_minioninstall/<id>',methods=['POST'])
+@login_required
 def saltminion(id):
 	hostinfo = Hosts.query.get(id)
 	saltssh = salt_ssh(hostinfo.ipaddress,hostinfo.ssh_user,hostinfo.ssh_passwd)
@@ -63,6 +88,7 @@ def saltminion(id):
 
 
 @main.route('/test/<id>',methods=['POST'])
+@login_required
 def xdinstall(id):
 	hostinfo = Hosts.query.get(id)
 	client = salt_command(hostinfo.ipaddress)
