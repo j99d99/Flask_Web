@@ -19,6 +19,16 @@ class salt_ssh(salt_api):
 		self.user = user
 		self.passwd = passwd
 
+	def ssh_v2(self,saltmodels,*args)
+		arg = []
+		if len(args) == 0:
+			ret = s.cmd(tgt=self.ipaddress,fun=saltmodels,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
+		for arg_index in range(len(args)):
+			arg.append(args[arg_index])
+		rel = s.cmd(tgt=self.ipaddress,fun=saltmodels,arg=arg,ignore_host_keys=True,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
+
+
+
 	def ssh(self):
 		s.cmd(tgt=self.ipaddress,fun='test.ping',ignore_host_keys=True,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		s.cmd(tgt=self.ipaddress,fun='cp.get_file',arg=['salt://epel-release-latest-6.noarch.rpm','/tmp/epel-release-latest-6.noarch.rpm'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
