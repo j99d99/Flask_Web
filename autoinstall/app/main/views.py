@@ -104,6 +104,7 @@ def xdinstall(id):
 		client.cpfile('p2pv2')
 		client.script('install_p2p.sh')
 	ret = client.script('create_rsakey.sh',hostinfo.general_user)
+	client.set_filemode('/usr/local/tomcat_*')
 	#change ssh port
 	sshport =  random.randint(40000,65536)
 	print sshport
