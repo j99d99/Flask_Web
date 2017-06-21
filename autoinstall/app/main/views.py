@@ -9,6 +9,7 @@ from flask.ext.login import login_required,logout_user,login_user,current_user
 import os,time
 from saltclass import salt_ssh,salt_command
 import random
+from ssh_paramiko import ssh_paramiko
 
 @main.route('/host-info/<id>')
 @login_required
@@ -118,6 +119,21 @@ def xdinstall(id):
 	client.servicemanage('sshd')
 	print jsonify({'message':ret})
 	return jsonify({'message':ret})
+
+
+@main.route('/ssh_command',methods=['POST'])
+def ssh_command():
+	id = request.form.get('id')
+	print id
+	command = request.form.get('command')
+	print command
+	hostinfo = Hosts.query.get(id)
+	ssh_connection = ssh_paramiko(hostinfo.ipaddress,hostinfo.ssh_user,hostinfo.ssh_passwd)
+	ssh = ssh_connection.ssh_connection()
+	stdin, stdout, stderr = ssh.exec_command(command)
+	result = stdout.read().strip('\n')
+	return result
+	
 
 #@main.route('/download/hostinfo/<id>',methods=['GET','POST'])
 #def download(id):

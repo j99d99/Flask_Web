@@ -25,7 +25,7 @@ class salt_ssh(salt_api):
 		s.cmd(tgt=self.ipaddress,fun='cmd.shell',arg=['rpm -vih /tmp/epel-release-latest-6.noarch.rpm'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		ret = s.cmd(tgt=self.ipaddress, fun='pkg.install',arg=['salt-minion'],ignore_host_keys=True,ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		print ret
-		s.cmd(tgt=self.ipaddress,fun='file.sed',arg=['/etc/salt/minion','#master: salt','master: 172.16.88.182'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
+		s.cmd(tgt=self.ipaddress,fun='file.sed',arg=['/etc/salt/minion','#master: salt','master: 172.16.88.192'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		s.cmd(tgt=self.ipaddress,fun='file.sed',arg=['/etc/salt/minion','#id:','id: %s' % self.ipaddress],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		s.cmd(tgt=self.ipaddress,fun='service.start',arg=['salt-minion'],ssh_user=self.user, ssh_passwd=self.passwd,roster='scan')
 		ret = client.cmd(self.ipaddress,'test.ping')
@@ -79,7 +79,9 @@ class salt_command(salt_api):
 
 	def getfile_from_minion(self,file_path):
 		self.file_path = file_path
-		client.cmd(self.ipaddress,'cp.push',[self.file_path])
+		print self.file_path
+		ret = client.cmd(self.ipaddress,'cp.push',[self.file_path])
+		print ret
 		abs_file_path = getfile_destdir + '/minions/' +self.ipaddress+'/files/'+file_path
 		cpcommand = "mv %s %s" % (abs_file_path,file_roots)
 		print abs_file_path

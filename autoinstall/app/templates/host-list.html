@@ -37,7 +37,7 @@
                     <td>{{ host.ipaddress }}</td>
                     <td>{{ host.ssh_user }}</td>
                     <td>{{ host.ssh_passwd}}</td>
-                    <td class="td-manage"><a style="text-decoration:none" onClick="salt_minion_install(this,{{ host.id }})" href="javascript:;" title="安装salt-minion"><i class="Hui-iconfont">&#xe6f1;</i></a>  <a style="text-decoration:none" onClick="admin_stop(this,{{ host.id }})" href="javascript:;" title="初始化安装系统"><i class="Hui-iconfont">&#xe6e1;</i></a>   <a title="详情" href="javascript:;" onclick="admin_edit(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe64f;</i></a>   <a title="删除" href="javascript:;" onClick="admin_del(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                    <td class="td-manage"><a style="text-decoration:none" onClick="salt_minion_install(this,{{ host.id }})" href="javascript:;" title="安装salt-minion"><i class="Hui-iconfont">&#xe6f1;</i></a>  <a style="text-decoration:none" onClick="admin_stop(this,{{ host.id }})" href="javascript:;" title="初始化安装系统"><i class="Hui-iconfont">&#xe6e1;</i></a>   <a title="详情" href="javascript:;" onclick="admin_edit(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe64f;</i></a> <a style="text-decoration:none" onClick="ssh_command(this,{{ host.id }})" href="javascript:;" title="执行命令"><i class="Hui-iconfont">&#xe6bf;</i></a>   <a title="删除" href="javascript:;" onClick="admin_del(this,{{ host.id }})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
 		{% endfor %}
                 </tbody>
             </table>
@@ -66,6 +66,17 @@ function admin_del(obj,id){
 		$(obj).parents("tr").remove();
 		// layer.msg('已删除!',{icon:1,time:1000});
 		layer.close(index);
+	});
+}
+
+function ssh_command(obj,id){
+	layer.open({
+  	type: 1,
+  	skin: 'layui-layer-demo', //样式类名
+  	closeBtn: 0, //不显示关闭按钮
+  	anim: 2,
+  	shadeClose: true, //开启遮罩关闭
+  	content: '<form action="/ssh_command" method="post"><input type="hidden" name="id" value=' +id+ '><br><input type="text" name="command"><br><input type=submit></form>'
 	});
 }
 /*管理员-编辑*/
